@@ -10,7 +10,7 @@ const Transaction = (props) => {
       <div>debit: {transaction.debit}</div>
       <div>details: {transaction.details}</div>
       <div>note: {transaction.note?.detail}</div>
-      <UpdateTransaction id={transaction.id} />
+      <UpdateTransaction id={transaction.id} noteId={transaction.note?.id} />
     </div>
   );
 }

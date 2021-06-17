@@ -11,6 +11,7 @@ const TRANSACTION_QUERY = gql`
       debit
       details
       note {
+        id
         detail
       }
     }

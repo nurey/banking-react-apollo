@@ -3,11 +3,13 @@ import { useMutation, gql } from '@apollo/client';
 
 const UPDATE_TRANSACTION_MUTATION = gql`
   mutation TransactionMutation(
-    $note: String!
+    $noteId: ID
+    $noteDetail: String!
     $id: ID!
   ) {
     updateCreditCardTransaction (
-      note: $note
+      noteId: $noteId
+      noteDetail: $noteDetail
       id: $id
     ) {
       creditCardTransaction {
@@ -17,6 +19,7 @@ const UPDATE_TRANSACTION_MUTATION = gql`
         debit
         details
         note {
+          id
           detail
         }
       }
@@ -32,7 +35,8 @@ const UpdateTransaction = (props) => {
 
   const [updateTransaction] = useMutation(UPDATE_TRANSACTION_MUTATION, {
     variables: {
-      note: formState.note,
+      noteDetail: formState.note,
+      noteId: props.noteId,
       id: props.id
     }
   });
