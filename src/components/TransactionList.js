@@ -3,8 +3,8 @@ import Transaction from './Transaction'
 import { useQuery, gql } from '@apollo/client';
 
 const TRANSACTION_QUERY = gql`
-  {
-    creditCardTransactions(sort: [txDateDesc]) {
+  query CreditCardTransactionQuery($showAnnotated: Boolean) {
+    creditCardTransactions(sort: [txDateDesc], showAnnotated: $showAnnotated) {
       id
       txDate
       credit
@@ -18,11 +18,13 @@ const TRANSACTION_QUERY = gql`
   }
 `;
 
-const TransactionList = () => {
-  const { data } = useQuery(TRANSACTION_QUERY);
+const TransactionList = (props) => {
+  const { data } = useQuery(TRANSACTION_QUERY, {
+    variables: { showAnnotated: props.config.showAnnotated }
+  });
 
   return (
-    <div>
+    <div class={ props.config.showAnnotated ? 'show-annotated' : null }>
       {data && (
         <>
           {data.creditCardTransactions.map((tx) => (

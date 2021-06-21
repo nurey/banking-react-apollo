@@ -45,3 +45,9 @@ input {
 .note.empty {
   background-color: rgb(248, 225, 20);
 }
+
+#toggle-annotate {
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 2px 6px 3px;
+}
