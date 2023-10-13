@@ -42,16 +42,17 @@ const UpdateTransaction = (props) => {
   });
 
   return (
-    <div>
+    <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
       <form
+        className="sm:mt-0 sm:col-span-2"
         onSubmit={(e) => {
           e.preventDefault();
           updateTransaction();
         }}
       >
-        <div className="flex flex-column mt3">
+        <div className="relative rounded-md shadow-sm">
           <input
-            className="mb2"
+            className="focus:ring-indigo-700 focus:border-indigo-700 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md"
             value={formState.note}
             onChange={(e) =>
               setFormState({
@@ -63,7 +64,9 @@ const UpdateTransaction = (props) => {
             placeholder="A description for the transaction"
           />
         </div>
-        <button type="submit">Submit</button>
+        <button type="submit" className="h-8 px-4 mt-1 text-sm text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800">
+          Submit
+        </button>
       </form>
     </div>
   );

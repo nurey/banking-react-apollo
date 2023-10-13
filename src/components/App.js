@@ -6,7 +6,7 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { showAnnotated: true };
+    this.state = { showAnnotated: true, showCredits: true };
     this.handleConfigChange = this.handleConfigChange.bind(this);
   }
 
@@ -16,7 +16,7 @@ class App extends Component {
 
   render() {
     return (
-      <div>
+      <div className='w-full h-full'>
         <TransactionListConfig config={this.state} onConfigChange={this.handleConfigChange}/>
         <TransactionList config={this.state} />
       </div>

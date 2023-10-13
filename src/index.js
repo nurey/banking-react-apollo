@@ -1,5 +1,6 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import * as ReactDOM from 'react-dom/client';
+import 'flowbite/src/flowbite';
 import './styles/index.css';
 import App from './components/App';
 
@@ -23,9 +24,10 @@ const client = new ApolloClient({
 });
 
 // 4
-ReactDOM.render(
+const root = ReactDOM.createRoot(document.getElementById('root'));
+
+root.render(
   <ApolloProvider client={client}>
     <App />
   </ApolloProvider>,
-  document.getElementById('root')
 );
