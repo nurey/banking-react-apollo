@@ -14,7 +14,8 @@ import {
 
 // 2
 const httpLink = createHttpLink({
-  uri: 'http://localhost:3000/graphql'
+  // uri: 'http://localhost:3000/graphql'
+  uri: 'https://budgetr.nurey.com/graphql'
 });
 
 // 3
