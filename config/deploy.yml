@@ -1,0 +1,37 @@
+service: budgetr-frontend
+
+image: nurey/budgetr-frontend
+
+servers:
+  web:
+    hosts:
+      - 168.235.69.227
+    options:
+      network: "private"
+
+# Use a different ssh user than root
+ssh:
+  user: ilia
+
+# Configure builder setup.
+builder:
+  local: true
+  arch: amd64
+#  remote: ssh://ilia@168.235.69.227
+#  local: false
+
+registry:
+  username: ilia@nurey.com
+
+  # Always use an access token rather than real password when possible.
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+proxy:
+  ssl: true
+  host: budgetr-app.nurey.com
+  app_port: 80
+
+#healthcheck:
+#  path: /
+#  port: 80
