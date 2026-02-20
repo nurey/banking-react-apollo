@@ -10,8 +10,7 @@ import { ApolloProvider } from '@apollo/client/react';
 
 // 2
 const httpLink = new HttpLink({
-  uri: 'http://localhost:3000/graphql'
-  // uri: 'https://budgetr.nurey.com/graphql'
+  uri: process.env.REACT_APP_GRAPHQL_URI
 });
 
 // 3
