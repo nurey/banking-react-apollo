@@ -1,42 +1,65 @@
-import React from 'react'
-import UpdateTransaction from './UpdateTransaction'
+import React from 'react';
+import { TableRow, TableCell, Badge } from 'flowbite-react';
 
-const Transaction = (props) => {
-  const { transaction } = props;
-  var noteClasses = ['note'];
-  if ( transaction.debit && ( !transaction.note || transaction.note?.detail === '' ) ) {
-    noteClasses.push('empty');
-  }
+const CATEGORY_COLORS = {
+  'Groceries': 'green',
+  'Fun Money': 'purple',
+  'Monthly Expenses': 'blue',
+  'Cat Expenses': 'pink',
+  'Additional Medical': 'cyan',
+};
 
-  return (
-    <div id={transaction.id} className="bg-white shadow overflow-hidden sm:rounded-lg">
-      <div className="border-t border-gray-200">
-        <dl>
-          <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-            <dt className="text-sm font-medium text-gray-500">Date</dt>
-            <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{transaction.txDate}</dd>
-          </div>
-          <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-            <dt className="text-sm font-medium text-gray-500">Credit</dt>
-            <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{transaction.credit}</dd>
-          </div>
-          <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-            <dt className="text-sm font-medium text-gray-500">Debit</dt>
-            <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{transaction.debit}</dd>
-          </div>
-          <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-            <dt className="text-sm font-medium text-gray-500">Details</dt>
-            <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{transaction.details}</dd>
-          </div>
-          <div className={`bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 ${noteClasses.join(' ')}`}>
-            <dt className="text-sm font-medium text-gray-500">Note</dt>
-            <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{transaction.note?.detail}</dd>
-          </div>
-        </dl>
-        <UpdateTransaction id={transaction.id} noteId={transaction.note?.id} />
-      </div>
-    </div>
-  );
+const FALLBACK_COLORS = ['indigo', 'purple', 'pink', 'blue', 'cyan', 'teal', 'green', 'lime'];
+
+function getCategoryColor(category) {
+  if (!category) return 'warning';
+  if (CATEGORY_COLORS[category]) return CATEGORY_COLORS[category];
+  const hash = category.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  return FALLBACK_COLORS[hash % FALLBACK_COLORS.length];
 }
 
-export default Transaction
+function formatDate(dateStr) {
+  const date = new Date(dateStr + 'T00:00:00');
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+function formatAmount(credit, debit) {
+  if (credit) return `+$${parseFloat(credit).toFixed(2)}`;
+  if (debit) return `-$${parseFloat(debit).toFixed(2)}`;
+  return '\u2014';
+}
+
+const Transaction = ({ transaction, index, isExpanded, onToggle }) => {
+  const isCredit = !!transaction.credit;
+  const isUncategorized = transaction.debit && (!transaction.note || !transaction.note.detail);
+  const category = transaction.note?.detail;
+
+  return (
+    <TableRow
+      className={`cursor-pointer animate-fade-slide-in transition-colors ${isUncategorized ? 'needs-attention' : ''} ${isExpanded ? '!bg-ledger-elevated' : ''}`}
+      style={{ animationDelay: `${Math.min(index, 20) * 30}ms` }}
+      onClick={onToggle}
+    >
+      <TableCell className="whitespace-nowrap !text-ledger-text-secondary text-sm !py-3">
+        {formatDate(transaction.txDate)}
+      </TableCell>
+      <TableCell className="text-sm max-w-xs truncate !py-3">
+        {transaction.details}
+      </TableCell>
+      <TableCell className="!py-3">
+        {category ? (
+          <Badge color={getCategoryColor(category)} size="xs">{category}</Badge>
+        ) : isUncategorized ? (
+          <Badge color="warning" size="xs">Uncategorized</Badge>
+        ) : null}
+      </TableCell>
+      <TableCell className="text-right font-mono text-sm whitespace-nowrap !py-3">
+        <span className={isCredit ? 'text-ledger-green font-medium' : ''}>
+          {formatAmount(transaction.credit, transaction.debit)}
+        </span>
+      </TableCell>
+    </TableRow>
+  );
+};
+
+export default Transaction;

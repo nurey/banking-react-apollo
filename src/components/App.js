@@ -1,27 +1,36 @@
-import React, { Component } from 'react'
-import TransactionList from './TransactionList'
-import TransactionListConfig from './TransactionListConfig'
+import React, { useState } from 'react';
+import TransactionList from './TransactionList';
+import TransactionListConfig from './TransactionListConfig';
+import SummaryHeader from './SummaryHeader';
+import AppNavbar from './AppNavbar';
 
-class App extends Component {
-  constructor(props) {
-    super(props);
+const TAB_CONFIG = [
+  { showAnnotated: false, showCredits: false },  // Needs Attention
+  { showAnnotated: true, showCredits: false },    // All Debits
+  { showAnnotated: true, showCredits: true },     // Everything
+];
 
-    this.state = { showAnnotated: true, showCredits: true };
-    this.handleConfigChange = this.handleConfigChange.bind(this);
-  }
+const App = () => {
+  const [activeTab, setActiveTab] = useState(0);
+  const [searchQuery, setSearchQuery] = useState('');
 
-  handleConfigChange(config) {
-    this.setState(config);
-  }
+  const config = TAB_CONFIG[activeTab];
 
-  render() {
-    return (
-      <div className='w-full h-full'>
-        <TransactionListConfig config={this.state} onConfigChange={this.handleConfigChange}/>
-        <TransactionList config={this.state} />
-      </div>
-    )
-  }
-}
+  return (
+    <div className="min-h-screen bg-ledger-base">
+      <AppNavbar />
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <SummaryHeader />
+        <TransactionListConfig
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+        />
+        <TransactionList config={config} searchQuery={searchQuery} />
+      </main>
+    </div>
+  );
+};
 
-export default App
+export default App;

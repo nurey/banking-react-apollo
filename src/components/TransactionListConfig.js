@@ -1,26 +1,32 @@
 import React from 'react';
-import { ToggleSwitch } from 'flowbite-react';
+import { Tabs, TabItem, TextInput } from 'flowbite-react';
 
-const TransactionListConfig = (props) => {
+const TransactionListConfig = ({ activeTab, onTabChange, searchQuery, onSearchChange }) => {
   return (
-    <section className="p-4 flex space-x-4">
-      <div>
-        Transactions without a note are highlighted
-      </div>
+    <div className="space-y-4">
+      <Tabs
+        variant="pills"
+        onActiveTabChange={onTabChange}
+      >
+        <TabItem active={activeTab === 0} title="Needs Attention">
+          <></>
+        </TabItem>
+        <TabItem active={activeTab === 1} title="All Debits">
+          <></>
+        </TabItem>
+        <TabItem active={activeTab === 2} title="Everything">
+          <></>
+        </TabItem>
+      </Tabs>
 
-      <ToggleSwitch
-        checked={props.config.showAnnotated}
-        label="Show Annotated"
-        onChange={(checked) => props.onConfigChange({ showAnnotated: checked })}
+      <TextInput
+        sizing="sm"
+        placeholder="Search transactions..."
+        value={searchQuery}
+        onChange={(e) => onSearchChange(e.target.value)}
       />
-
-      <ToggleSwitch
-        checked={props.config.showCredits}
-        label="Show Credits"
-        onChange={(checked) => props.onConfigChange({ showCredits: checked })}
-      />
-    </section>
+    </div>
   );
-}
+};
 
-export default TransactionListConfig
+export default TransactionListConfig;

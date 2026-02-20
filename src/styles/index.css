@@ -2,6 +2,57 @@
 @tailwind components;
 @tailwind utilities;
 
-.note.empty {
-  background-color: rgb(248, 225, 20);
+:root {
+  --ledger-base: #08090d;
+  --ledger-surface: #111318;
+  --ledger-elevated: #1a1d25;
+  --ledger-border: #252830;
+  --ledger-text-1: #e8e9ed;
+  --ledger-text-2: #8b8d97;
+  --ledger-amber: #e5a440;
+  --ledger-green: #3dd68c;
+  --ledger-blue: #6c8aff;
+}
+
+body {
+  background-color: var(--ledger-base);
+  color: var(--ledger-text-1);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--ledger-base);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--ledger-border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ledger-text-2);
+}
+
+/* Uncategorized row left accent */
+tr.needs-attention {
+  border-left: 3px solid var(--ledger-amber) !important;
+}
+
+/* Expanded edit row */
+tr.edit-row td {
+  background-color: var(--ledger-elevated) !important;
+  border-top: 1px solid var(--ledger-border);
+}
+
+/* Override Flowbite tab panel padding when empty */
+[role="tabpanel"] {
+  padding: 0 !important;
 }
