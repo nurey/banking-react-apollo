@@ -5,17 +5,13 @@ import './styles/index.css';
 import App from './components/App';
 
 // 1
-import {
-  ApolloProvider,
-  ApolloClient,
-  createHttpLink,
-  InMemoryCache
-} from '@apollo/client';
+import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
+import { ApolloProvider } from '@apollo/client/react';
 
 // 2
-const httpLink = createHttpLink({
-  // uri: 'http://localhost:3000/graphql'
-  uri: 'https://budgetr.nurey.com/graphql'
+const httpLink = new HttpLink({
+  uri: 'http://localhost:3000/graphql'
+  // uri: 'https://budgetr.nurey.com/graphql'
 });
 
 // 3

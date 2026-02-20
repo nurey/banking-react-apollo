@@ -1,6 +1,7 @@
 import React from 'react'
 import Transaction from './Transaction'
-import { useQuery, gql } from '@apollo/client';
+import { gql } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 
 const TRANSACTION_QUERY = gql`
   query CreditCardTransactionQuery($showAnnotated: Boolean, $showCredits: Boolean) {
