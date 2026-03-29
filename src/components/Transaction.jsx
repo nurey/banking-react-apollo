@@ -1,5 +1,6 @@
 import React from 'react';
 import { TableRow, TableCell, Badge } from 'flowbite-react';
+import { formatCents } from '../utils/currency';
 
 const CATEGORY_COLORS = {
   'Groceries': 'green',
@@ -24,8 +25,8 @@ function formatDate(dateStr) {
 }
 
 function formatAmount(credit, debit) {
-  if (credit) return `+$${parseFloat(credit).toFixed(2)}`;
-  if (debit) return `-$${parseFloat(debit).toFixed(2)}`;
+  if (credit) return `+$${formatCents(credit)}`;
+  if (debit) return `-$${formatCents(debit)}`;
   return '\u2014';
 }
 

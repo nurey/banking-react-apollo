@@ -2,6 +2,7 @@ import React from 'react';
 import { Badge } from 'flowbite-react';
 import { gql } from '@apollo/client';
 import { useQuery } from '@apollo/client/react';
+import { formatCents } from '../utils/currency';
 
 const ALL_TRANSACTIONS_QUERY = gql`
   query SummaryQuery {
@@ -24,8 +25,8 @@ const SummaryHeader = () => {
 
   const transactions = data.creditCardTransactions;
 
-  const totalDebits = transactions.reduce((sum, tx) => sum + (parseFloat(tx.debit) || 0), 0);
-  const totalCredits = transactions.reduce((sum, tx) => sum + (parseFloat(tx.credit) || 0), 0);
+  const totalDebits = transactions.reduce((sum, tx) => sum + (tx.debit || 0), 0);
+  const totalCredits = transactions.reduce((sum, tx) => sum + (tx.credit || 0), 0);
   const uncategorizedCount = transactions.filter(
     tx => tx.debit && (!tx.note || !tx.note.detail)
   ).length;
@@ -34,12 +35,12 @@ const SummaryHeader = () => {
     <div className="grid grid-cols-3 gap-4 mb-6">
       <div className="rounded-lg border border-ledger-border bg-ledger-surface px-4 py-3">
         <p className="text-xs uppercase tracking-wider text-ledger-text-secondary mb-1">Total Spent</p>
-        <p className="text-xl font-mono font-semibold">${totalDebits.toFixed(2)}</p>
+        <p className="text-xl font-mono font-semibold">${formatCents(totalDebits)}</p>
       </div>
 
       <div className="rounded-lg border border-ledger-border bg-ledger-surface px-4 py-3">
         <p className="text-xs uppercase tracking-wider text-ledger-text-secondary mb-1">Credits</p>
-        <p className="text-xl font-mono font-semibold text-ledger-green">+${totalCredits.toFixed(2)}</p>
+        <p className="text-xl font-mono font-semibold text-ledger-green">+${formatCents(totalCredits)}</p>
       </div>
 
       <div className="rounded-lg border border-ledger-border bg-ledger-surface px-4 py-3">
