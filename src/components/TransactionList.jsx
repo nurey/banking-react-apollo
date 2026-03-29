@@ -89,10 +89,10 @@ const TransactionList = ({ config, searchQuery }) => {
       <Table hoverable>
         <TableHead>
           <TableRow>
-            <TableHeadCell className="!bg-ledger-surface !text-ledger-text-secondary text-xs uppercase tracking-wider">Date</TableHeadCell>
-            <TableHeadCell className="!bg-ledger-surface !text-ledger-text-secondary text-xs uppercase tracking-wider">Details</TableHeadCell>
-            <TableHeadCell className="!bg-ledger-surface !text-ledger-text-secondary text-xs uppercase tracking-wider">Category</TableHeadCell>
-            <TableHeadCell className="!bg-ledger-surface !text-ledger-text-secondary text-xs uppercase tracking-wider text-right">Amount</TableHeadCell>
+            <TableHeadCell className="bg-ledger-surface! text-ledger-text-secondary! text-xs uppercase tracking-wider">Date</TableHeadCell>
+            <TableHeadCell className="bg-ledger-surface! text-ledger-text-secondary! text-xs uppercase tracking-wider">Details</TableHeadCell>
+            <TableHeadCell className="bg-ledger-surface! text-ledger-text-secondary! text-xs uppercase tracking-wider">Category</TableHeadCell>
+            <TableHeadCell className="bg-ledger-surface! text-ledger-text-secondary! text-xs uppercase tracking-wider text-right">Amount</TableHeadCell>
           </TableRow>
         </TableHead>
         <TableBody className="divide-y divide-ledger-border">
@@ -106,7 +106,7 @@ const TransactionList = ({ config, searchQuery }) => {
               />
               {expandedId === tx.id && (
                 <TableRow className="edit-row animate-expand-down">
-                  <TableCell colSpan={4} className="!bg-ledger-elevated">
+                  <TableCell colSpan={4} className="bg-ledger-elevated!">
                     <UpdateTransaction id={tx.id} noteId={tx.note?.id} categories={categories} />
                   </TableCell>
                 </TableRow>

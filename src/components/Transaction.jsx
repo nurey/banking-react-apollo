@@ -37,24 +37,24 @@ const Transaction = ({ transaction, index, isExpanded, onToggle }) => {
 
   return (
     <TableRow
-      className={`cursor-pointer animate-fade-slide-in transition-colors ${isUncategorized ? 'needs-attention' : ''} ${isExpanded ? '!bg-ledger-elevated' : ''}`}
+      className={`cursor-pointer animate-fade-slide-in transition-colors ${isUncategorized ? 'needs-attention' : ''} ${isExpanded ? 'bg-ledger-elevated!' : ''}`}
       style={{ animationDelay: `${Math.min(index, 20) * 30}ms` }}
       onClick={onToggle}
     >
-      <TableCell className="whitespace-nowrap !text-ledger-text-secondary text-sm !py-3">
+      <TableCell className="whitespace-nowrap text-ledger-text-secondary! text-sm py-3!">
         {formatDate(transaction.txDate)}
       </TableCell>
-      <TableCell className="text-sm max-w-xs truncate !py-3">
+      <TableCell className="text-sm max-w-xs truncate py-3!">
         {transaction.details}
       </TableCell>
-      <TableCell className="!py-3">
+      <TableCell className="py-3!">
         {category ? (
           <Badge color={getCategoryColor(category)} size="xs">{category}</Badge>
         ) : isUncategorized ? (
           <Badge color="warning" size="xs">Uncategorized</Badge>
         ) : null}
       </TableCell>
-      <TableCell className="text-right font-mono text-sm whitespace-nowrap !py-3">
+      <TableCell className="text-right font-mono text-sm whitespace-nowrap py-3!">
         <span className={isCredit ? 'text-ledger-green font-medium' : ''}>
           {formatAmount(transaction.credit, transaction.debit)}
         </span>

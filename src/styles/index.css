@@ -1,6 +1,7 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@config "../../tailwind.config.cjs";
+@source "../../node_modules/flowbite/**/*.js";
+@source "../../node_modules/flowbite-react/**/*.js";
 
 :root {
   --ledger-base: #08090d;
