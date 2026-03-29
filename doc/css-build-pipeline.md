@@ -6,8 +6,8 @@ This document describes how Vite, Tailwind CSS v4, and Flowbite are configured a
 
 ```
                          ┌──────────────────────┐
-                         │        Vite           │
-                         │    (build tool)       │
+                         │      Vite v8          │
+                         │  (Rolldown + Oxc)     │
                          └──────┬───────────────┘
                                 │ plugins: [...]
                     ┌───────────┴───────────┐
@@ -76,17 +76,17 @@ This document describes how Vite, Tailwind CSS v4, and Flowbite are configured a
 
 ## Build-Time Data Flow
 
-1. **Vite** invokes `@tailwindcss/vite` when it encounters a CSS import.
+1. **Vite 8** invokes `@tailwindcss/vite` when it encounters a CSS import.
 2. Tailwind reads `src/styles/index.css` and follows the `@config` directive to load the JS config and the Flowbite plugin.
 3. The `@source` directives tell Tailwind's scanner to also look inside `node_modules/flowbite/` and `node_modules/flowbite-react/` for utility class usage. Tailwind auto-scans `src/` but skips `node_modules/` by default.
 4. Tailwind generates CSS only for classes actually used across all scanned files.
-5. Vite bundles the output CSS and JS into `dist/`.
+5. Vite bundles the output CSS and JS into `dist/` using Rolldown (which replaced Rollup in Vite 8) and minifies JS with Oxc (which replaced esbuild).
 
 ## Key Files
 
 ### `vite.config.js`
 
-Registers both the Tailwind and React plugins. `@tailwindcss/vite` replaces the older PostCSS-based setup and handles CSS processing and vendor prefixing in a single pass.
+Registers both the Tailwind and React plugins. `@tailwindcss/vite` replaces the older PostCSS-based setup and handles CSS processing and vendor prefixing in a single pass. `@vitejs/plugin-react` v6+ is required for Vite 8 compatibility.
 
 ```js
 import { defineConfig } from 'vite';
