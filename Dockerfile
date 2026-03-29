@@ -4,6 +4,7 @@ WORKDIR /home/bun/app
 COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile
 COPY . .
+ENV NODE_ENV=production
 RUN bun run build
 
 FROM nginx:1.29.7-alpine3.23 AS server
