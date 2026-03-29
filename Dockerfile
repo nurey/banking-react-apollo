@@ -1,11 +1,11 @@
 # syntax=docker/dockerfile:1
-FROM node:krypton-alpine3.23 AS builder
-WORKDIR /home/node/app
-COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile
+FROM oven/bun:alpine AS builder
+WORKDIR /home/bun/app
+COPY package.json bun.lock ./
+RUN bun install --frozen-lockfile
 COPY . .
-RUN yarn build
+RUN bun run build
 
-FROM nginx:1.29.5-alpine3.23 AS server
-COPY --from=builder /home/node/app/dist /usr/share/nginx/html
+FROM nginx:1.29.7-alpine3.23 AS server
+COPY --from=builder /home/bun/app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
