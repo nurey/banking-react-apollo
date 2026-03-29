@@ -15,10 +15,9 @@ ssh:
 
 # Configure builder setup.
 builder:
-  local: true
   arch: amd64
-#  remote: ssh://ilia@168.235.69.227
-#  local: false
+  remote: ssh://ilia@10.0.0.218
+  local: false
 
 registry:
   username: ilia@nurey.com
