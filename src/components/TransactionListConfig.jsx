@@ -5,7 +5,7 @@ const TransactionListConfig = ({ activeTab, onTabChange, searchQuery, onSearchCh
   return (
     <div className="space-y-4">
       <Tabs
-        variant="pills"
+        variant="default"
         onActiveTabChange={onTabChange}
       >
         <TabItem active={activeTab === 0} title="Needs Attention">
