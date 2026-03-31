@@ -7,6 +7,6 @@ COPY . .
 ENV NODE_ENV=production
 RUN bun run build
 
-FROM nginx:1.29.7-alpine3.23 AS server
+FROM nginx:stable-alpine-slim AS server
 COPY --from=builder /home/bun/app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
