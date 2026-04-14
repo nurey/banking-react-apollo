@@ -2,27 +2,30 @@ import React from 'react';
 import * as ReactDOM from 'react-dom/client';
 import './styles/index.css';
 import App from './components/App';
+import { BrowserRouter } from 'react-router-dom';
 
-// 1
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 import { ApolloProvider } from '@apollo/client/react';
+import { AuthProvider } from './hooks/useAuth';
 
-// 2
 const httpLink = new HttpLink({
-  uri: import.meta.env.VITE_GRAPHQL_URI
+  uri: import.meta.env.VITE_GRAPHQL_URI,
+  credentials: 'include',
 });
 
-// 3
 const client = new ApolloClient({
   link: httpLink,
   cache: new InMemoryCache()
 });
 
-// 4
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
-  <ApolloProvider client={client}>
-    <App />
-  </ApolloProvider>,
+  <BrowserRouter>
+    <AuthProvider>
+      <ApolloProvider client={client}>
+        <App />
+      </ApolloProvider>
+    </AuthProvider>
+  </BrowserRouter>,
 );

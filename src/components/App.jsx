@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 import TransactionList from './TransactionList';
 import TransactionListConfig from './TransactionListConfig';
 import SummaryHeader from './SummaryHeader';
 import AppNavbar from './AppNavbar';
+import LoginPage from './LoginPage';
+import RegisterPage from './RegisterPage';
 
 const TAB_CONFIG = [
   { showAnnotated: false, showCredits: false },  // Needs Attention
@@ -10,7 +14,7 @@ const TAB_CONFIG = [
   { showAnnotated: true, showCredits: true },     // Everything
 ];
 
-const App = () => {
+const Dashboard = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -30,6 +34,28 @@ const App = () => {
         <TransactionList config={config} searchQuery={searchQuery} />
       </main>
     </div>
+  );
+};
+
+const ProtectedRoute = ({ children }) => {
+  const { isAuthenticated, loading } = useAuth();
+  if (loading) return null;
+  return isAuthenticated ? children : <Navigate to="/login" replace />;
+};
+
+const PublicRoute = ({ children }) => {
+  const { isAuthenticated, loading } = useAuth();
+  if (loading) return null;
+  return isAuthenticated ? <Navigate to="/" replace /> : children;
+};
+
+const App = () => {
+  return (
+    <Routes>
+      <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
+      <Route path="/register" element={<PublicRoute><RegisterPage /></PublicRoute>} />
+      <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+    </Routes>
   );
 };
 

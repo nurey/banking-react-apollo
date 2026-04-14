@@ -1,7 +1,10 @@
 import React from 'react';
 import { Navbar, NavbarBrand } from 'flowbite-react';
+import { useAuth } from '../hooks/useAuth';
 
 const AppNavbar = () => {
+  const { user, logout } = useAuth();
+
   return (
     <Navbar fluid className="bg-ledger-surface! border-b border-ledger-border">
       <NavbarBrand href="/">
@@ -10,6 +13,17 @@ const AppNavbar = () => {
           Budgetr
         </span>
       </NavbarBrand>
+      {user && (
+        <div className="flex items-center gap-4">
+          <span className="text-sm text-ledger-text-2">{user.email_address}</span>
+          <button
+            onClick={logout}
+            className="text-sm text-ledger-text-2 hover:text-ledger-text-1"
+          >
+            Sign out
+          </button>
+        </div>
+      )}
     </Navbar>
   );
 };
