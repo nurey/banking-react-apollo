@@ -7,6 +7,7 @@ import SummaryHeader from './SummaryHeader';
 import AppNavbar from './AppNavbar';
 import LoginPage from './LoginPage';
 import RegisterPage from './RegisterPage';
+import ImportStatus from './ImportStatus';
 
 const TAB_CONFIG = [
   { showAnnotated: false, showCredits: false },  // Needs Attention
@@ -24,6 +25,7 @@ const Dashboard = () => {
     <div className="min-h-screen bg-ledger-base">
       <AppNavbar />
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <ImportStatus />
         <SummaryHeader />
         <TransactionListConfig
           activeTab={activeTab}
