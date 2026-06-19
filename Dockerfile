@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM node:22-alpine AS builder
+FROM node:24-alpine AS builder
 RUN npm install -g bun
 WORKDIR /app
 COPY package.json bun.lock ./
