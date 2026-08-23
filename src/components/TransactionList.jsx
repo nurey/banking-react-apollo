@@ -13,6 +13,7 @@ const TRANSACTION_QUERY = gql`
       credit
       debit
       details
+      cardNumber
       note {
         id
         detail
@@ -107,6 +108,12 @@ const TransactionList = ({ config, searchQuery }) => {
               {expandedId === tx.id && (
                 <TableRow className="edit-row animate-expand-down">
                   <TableCell colSpan={4} className="bg-ledger-elevated!">
+                    <div className="flex items-center gap-2 text-xs">
+                      <span className="uppercase tracking-wider text-ledger-text-secondary">Card</span>
+                      <span className="font-mono tracking-wide text-ledger-text-primary">
+                        {tx.cardNumber || '—'}
+                      </span>
+                    </div>
                     <UpdateTransaction id={tx.id} noteId={tx.note?.id} categories={categories} />
                   </TableCell>
                 </TableRow>

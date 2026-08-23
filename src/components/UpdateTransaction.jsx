@@ -21,6 +21,7 @@ const UPDATE_TRANSACTION_MUTATION = gql`
         credit
         debit
         details
+        cardNumber
         note {
           id
           detail
