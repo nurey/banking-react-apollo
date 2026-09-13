@@ -5,9 +5,7 @@ image: nurey/budgetr-frontend
 servers:
   web:
     hosts:
-      - 168.235.69.227
-    options:
-      network: "private"
+      - 38.49.217.106
 
 # Use a different ssh user than root
 ssh:
