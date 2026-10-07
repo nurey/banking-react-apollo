@@ -37,6 +37,17 @@ Builds the app for production to the `dist` folder, minified and with hashed fil
 
 Serves the production build locally to preview it before deploying.
 
+## Shipping
+
+Releases are tested on optiplex, then the same image is promoted to production:
+
+```bash
+kamal deploy -d optiplex    # build, push, deploy to http://budgetr.lan
+kamal deploy --skip-push    # promote that image to production
+```
+
+See [doc/shipping.md](doc/shipping.md) for the full process.
+
 ## Learn More
 
 - [Vite documentation](https://vite.dev/)
