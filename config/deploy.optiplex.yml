@@ -15,4 +15,5 @@ builder:
 
 proxy:
   ssl: false
-  host: budgetr-app.10.0.0.218.nip.io
+  # Local DNS record in pihole (homelab repo: stacks/pihole/docker-compose.yml)
+  host: budgetr.lan
