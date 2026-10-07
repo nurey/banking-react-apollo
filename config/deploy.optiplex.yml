@@ -1,17 +1,14 @@
 # LAN deployment to optiplex: kamal deploy -d optiplex
 # Shares optiplex's kamal-proxy with the budgetr backend, which is its catch-all route.
-
-# Own repository: the API URI is baked in, so tags must not collide with production's
-image: nurey/budgetr-frontend-optiplex
+#
+# Uses the same image as production: the app picks its API from the page's host
+# (src/utils/graphqlUri.js), so a tested image can be promoted with
+#   kamal deploy --skip-push
 
 servers:
   web:
     hosts:
       - 10.0.0.218
-
-builder:
-  args:
-    VITE_GRAPHQL_URI: http://10.0.0.218/graphql
 
 proxy:
   ssl: false

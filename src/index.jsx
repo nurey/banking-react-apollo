@@ -2,6 +2,7 @@ import React from 'react';
 import * as ReactDOM from 'react-dom/client';
 import './styles/index.css';
 import App from './components/App';
+import { graphqlUri } from './utils/graphqlUri';
 
 // 1
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
@@ -9,7 +10,7 @@ import { ApolloProvider } from '@apollo/client/react';
 
 // 2
 const httpLink = new HttpLink({
-  uri: import.meta.env.VITE_GRAPHQL_URI
+  uri: graphqlUri(window.location.hostname, import.meta.env.VITE_GRAPHQL_URI)
 });
 
 // 3
