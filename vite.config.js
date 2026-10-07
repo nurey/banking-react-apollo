@@ -4,7 +4,13 @@ import react from '@vitejs/plugin-react';
 import flowbiteReact from 'flowbite-react/plugin/vite';
 
 export default defineConfig({
-  plugins: [tailwindcss(), react(), flowbiteReact()],
+  plugins: [
+    tailwindcss(),
+    react(),
+    // Its dev hook starts a project-wide file watcher that never closes, which keeps
+    // Vitest from exiting. Tests don't need flowbite's class list, so skip it there.
+    !process.env.VITEST && flowbiteReact(),
+  ],
   resolve: {
     alias: {
       // flowbite-react bundles tailwind-merge v2 for Tailwind 3 alongside v3, and only
