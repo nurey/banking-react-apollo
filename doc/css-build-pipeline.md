@@ -1,144 +1,107 @@
-# CSS Build Pipeline: Vite + Tailwind CSS + Flowbite
+# CSS Build Pipeline: Vite + Tailwind CSS + Flowbite React
 
-This document describes how Vite, Tailwind CSS v4, and Flowbite are configured and how they interact during development and production builds.
+This document describes how Vite, Tailwind CSS v4, and Flowbite React are configured and how they interact during development and production builds.
 
 ## Architecture Overview
 
 ```
-                         ┌──────────────────────┐
-                         │      Vite v8          │
-                         │  (Rolldown + Oxc)     │
-                         └──────┬───────────────┘
+                    ┌───────────────────────┐
+                    │        Vite v8        │
+                    │   (Rolldown + Oxc)    │
+                    └───────────┬───────────┘
                                 │ plugins: [...]
-                    ┌───────────┴───────────┐
-                    ▼                       ▼
-         ┌─────────────────┐      ┌────────────────┐
-         │ @tailwindcss/vite│      │ @vitejs/       │
-         │  (CSS pipeline)  │      │ plugin-react   │
-         └────────┬────────┘      └────────────────┘
-                  │ depends on
-                  ▼
-         ┌─────────────────┐
-         │ tailwindcss v4   │
-         │   (core engine)  │
-         └────────┬────────┘
-                  │ reads
-                  ▼
-     ┌────────────────────────┐
-     │  src/styles/index.css   │
-     │                         │
-     │  @import "tailwindcss"  │─── loads base, components, utilities
-     │  @config "../../tw..."  │─┐
-     │  @source "…/flowbite"   │─┤
-     │  @source "…/flowbite-   │─┤
-     │          react"         │ │
-     └─────────────────────────┘ │
-                                 │
-          ┌──────────────────────┘
-          │ @config loads
-          ▼
-  ┌──────────────────────┐
-  │ tailwind.config.cjs   │
-  │                       │
-  │  theme.extend: {      │─── custom colors, fonts, keyframes
-  │    colors.ledger…     │
-  │  }                    │
-  │  darkMode: 'class'    │
-  │  plugins: [           │
-  │    flowbite/plugin ───┤
-  │  ]                    │
-  └───────────────────────┘
-                          │
-                          │ registers base styles,
-                          │ dark mode variants
-                          ▼
-               ┌────────────────────┐
-               │   flowbite v4.0.1   │
-               │  (vanilla JS + CSS) │
-               └────────┬───────────┘
-                        │ wrapped by
-                        ▼
-               ┌────────────────────┐
-               │ flowbite-react      │
-               │  v0.12.17           │
-               │                     │
-               │  Navbar, Table,     │
-               │  Badge, Spinner,    │
-               │  TextInput…         │
-               └────────┬───────────┘
-                        │ used in
-                        ▼
-               ┌────────────────────┐
-               │   src/**/*.jsx      │
-               │  (React components) │
-               └────────────────────┘
+          ┌─────────────────────┼─────────────────────┐
+          ▼                     ▼                     ▼
+┌───────────────────┐ ┌───────────────────┐ ┌───────────────────┐
+│ @tailwindcss/vite │ │ @vitejs/          │ │ flowbite-react/   │
+│  (CSS pipeline)   │ │ plugin-react      │ │ plugin/vite       │
+└─────────┬─────────┘ └───────────────────┘ └─────────┬─────────┘
+          │ runs tailwindcss v4 on                    │ scans src/ for flowbite-react
+          ▼                                           │ imports, writes
+┌─────────────────────────────────────────┐           ▼
+│ src/styles/index.css                    │ ┌───────────────────────────────┐
+│                                         │ │ .flowbite-react/              │
+│ @import "tailwindcss"                   │ │   class-list.json (generated) │
+│ @import "flowbite-react/plugin/         │ │   config.json                 │
+│          tailwindcss" ── flowbite theme │ │   init.jsx (ThemeInit)        │
+│ @source "…/class-list.json" ◄───────────┼─┤                               │
+│ @config "../../tailwind.config.cjs" ──┐ │ └───────────────────────────────┘
+└───────────────────────────────────────┼─┘
+                                        ▼
+                         ┌──────────────────────────────┐
+                         │ tailwind.config.cjs          │
+                         │  theme.extend: ledger colors,│
+                         │  fonts, keyframes            │
+                         │  darkMode: 'class'           │
+                         └──────────────────────────────┘
 ```
 
 ## Build-Time Data Flow
 
-1. **Vite 8** invokes `@tailwindcss/vite` when it encounters a CSS import.
-2. Tailwind reads `src/styles/index.css` and follows the `@config` directive to load the JS config and the Flowbite plugin.
-3. The `@source` directives tell Tailwind's scanner to also look inside `node_modules/flowbite/` and `node_modules/flowbite-react/` for utility class usage. Tailwind auto-scans `src/` but skips `node_modules/` by default.
-4. Tailwind generates CSS only for classes actually used across all scanned files.
-5. Vite bundles the output CSS and JS into `dist/` using Rolldown (which replaced Rollup in Vite 8) and minifies JS with Oxc (which replaced esbuild).
+1. At the start of every build (and when the dev server starts), the **flowbite-react Vite plugin** scans `src/` for components imported from `flowbite-react` and writes the Tailwind classes those components use to `.flowbite-react/class-list.json`. In dev it keeps watching, so importing a new component updates the list.
+2. **`@tailwindcss/vite`** processes `src/styles/index.css`. Tailwind scans `src/` automatically, plus `class-list.json` via `@source`, and generates CSS only for the classes it finds. It never scans `node_modules/flowbite-react/` itself, so unused components add no CSS.
+3. `@import "flowbite-react/plugin/tailwindcss"` adds Flowbite's theme (its color palette, including `primary`), and `@config` loads the project's own theme from `tailwind.config.cjs`.
+4. Vite bundles the output CSS and JS into `dist/` using Rolldown and minifies JS with Oxc.
 
 ## Key Files
 
 ### `vite.config.js`
 
-Registers both the Tailwind and React plugins. `@tailwindcss/vite` replaces the older PostCSS-based setup and handles CSS processing and vendor prefixing in a single pass. `@vitejs/plugin-react` v6+ is required for Vite 8 compatibility.
-
 ```js
-import { defineConfig } from 'vite';
-import tailwindcss from '@tailwindcss/vite';
-import react from '@vitejs/plugin-react';
-
-export default defineConfig({
-  plugins: [tailwindcss(), react()],
-  server: { port: 3000 },
-});
+plugins: [
+  tailwindcss(),
+  react(),
+  !process.env.VITEST && flowbiteReact(),
+],
+resolve: {
+  alias: { 'tailwind-merge-v2': 'tailwind-merge-v3' },
+},
 ```
+
+- **`flowbiteReact()` is skipped under Vitest.** Its dev hook starts a project-wide file watcher that never closes, which keeps Vitest from exiting. Tests don't need the class list.
+- **The `tailwind-merge-v2` alias** removes a dead dependency. flowbite-react bundles tailwind-merge v2 (for Tailwind 3) alongside v3 and only uses v2 when its version is set to 3. Aliasing v2 to v3 saves about 20 kB of JS.
 
 ### `src/styles/index.css`
 
-The CSS entry point. The directives at the top wire everything together:
-
 | Directive | Purpose |
 |---|---|
-| `@import "tailwindcss"` | Loads Tailwind's base reset, component layer, and utility layer |
-| `@config "../../tailwind.config.cjs"` | Points to the JS config for theme customization and plugins (v4 no longer auto-detects JS config files) |
-| `@source "../../node_modules/flowbite/**/*.js"` | Tells the class scanner to include Flowbite's JS so its utility classes are generated |
-| `@source "../../node_modules/flowbite-react/**/*.js"` | Same for Flowbite React components |
+| `@import "tailwindcss"` | Tailwind's base reset, components and utilities |
+| `@import "flowbite-react/plugin/tailwindcss"` | Flowbite's theme: its color palette and `primary` color |
+| `@source "../../.flowbite-react/class-list.json"` | Classes used by the flowbite-react components the app imports |
+| `@config "../../tailwind.config.cjs"` | The project's theme (Tailwind v4 doesn't auto-detect JS config files) |
 
-Custom CSS (`:root` variables, body styles, scrollbar overrides) follows below these directives.
+The flowbite-react plugin added the first `@import` and the `@source` line, and checks for them on each build; it leaves the file alone once they're present. Custom CSS (`:root` variables, body styles, scrollbar overrides) follows the directives.
+
+### `.flowbite-react/`
+
+| File | Tracked | Purpose |
+|---|---|---|
+| `config.json` | yes | Plugin settings: Tailwind `version: 4`, `dark: true`, `tsx: false` (so it generates `init.jsx`) |
+| `init.jsx` | yes | Generated from `config.json`; exports `ThemeInit`, rendered in `src/index.jsx` to pass those settings to flowbite-react at runtime |
+| `class-list.json` | no | Regenerated on every build, including inside the Docker build |
+
+Edit `config.json`, not `init.jsx`; the plugin rewrites `init.jsx` to match.
 
 ### `tailwind.config.cjs`
 
-A standard v3-style JS config loaded through the `@config` bridge. Tailwind v4 maintains backward compatibility with this format.
+A v3-style JS config loaded through `@config`.
 
 | Section | What it configures |
 |---|---|
-| `darkMode: 'class'` | Dark mode toggled by a `dark` class on `<html>`, required by Flowbite's internal `dark:` variants |
-| `content` | Source paths for class scanning (supplemented by `@source` in CSS) |
+| `darkMode: 'class'` | Dark mode toggled by a `dark` class on `<html>`, which flowbite-react's `dark:` variants rely on |
+| `content` | `src/` only; flowbite-react's classes come from `class-list.json` |
 | `theme.extend.colors.ledger` | Custom color palette for the app's dark theme |
 | `theme.extend.fontFamily` | DM Sans (body) and JetBrains Mono (financial figures) |
 | `theme.extend.keyframes` / `animation` | `fade-slide-in` for transaction rows, `expand-down` for edit panels |
-| `plugins: [flowbite/plugin]` | Registers Flowbite's base styles, dark mode support, and component classes |
 
-## How Flowbite Integrates
+## Overriding Flowbite Styles
 
-Flowbite connects at two levels:
-
-1. **Tailwind plugin** (`flowbite/plugin`) -- registered in `tailwind.config.cjs`, it extends Tailwind with Flowbite's base styles and dark mode component variants. This runs at build time during CSS generation.
-
-2. **React components** (`flowbite-react`) -- provides pre-built React components (`Navbar`, `Table`, `Badge`, `Spinner`, `TextInput`, `Button`, etc.) that use Tailwind utility classes internally. The `@source` directive in `index.css` ensures Tailwind's scanner sees the classes these components use, so the corresponding CSS is generated.
-
-### Overriding Flowbite Styles
-
-Flowbite components have their own default styles. This project overrides them with the custom ledger theme using Tailwind's `!important` modifier (suffix syntax):
+flowbite-react components have their own default styles. This project overrides them with the ledger theme using Tailwind's `!important` modifier (suffix syntax):
 
 ```jsx
 <TableHeadCell className="bg-ledger-surface! text-ledger-text-secondary!">
 ```
 
-The `!` at the end of a utility class compiles to `!important`, ensuring the custom style takes precedence over Flowbite's defaults.
+The `!` at the end of a utility class compiles to `!important`, so the custom style wins over Flowbite's defaults.
+
+Anything not overridden uses Flowbite's palette. For example, the active tab label uses Flowbite's `primary` blue (`text-primary-600 dark:text-primary-500`).
