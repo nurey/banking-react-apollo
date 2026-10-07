@@ -5,6 +5,8 @@ WORKDIR /app
 COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile
 COPY . .
+# Overrides .env.production when passed (e.g. by a Kamal destination)
+ARG VITE_GRAPHQL_URI
 ENV NODE_ENV=production
 RUN npx vite build
 
