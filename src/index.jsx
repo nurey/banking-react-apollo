@@ -3,6 +3,7 @@ import * as ReactDOM from 'react-dom/client';
 import './styles/index.css';
 import App from './components/App';
 import { graphqlUri } from './utils/graphqlUri';
+import { ThemeInit } from '../.flowbite-react/init';
 
 // 1
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
@@ -24,6 +25,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
   <ApolloProvider client={client}>
+    <ThemeInit />
     <App />
   </ApolloProvider>,
 );

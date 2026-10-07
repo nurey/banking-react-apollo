@@ -1,9 +1,10 @@
 import { defineConfig } from 'vite';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
+import flowbiteReact from 'flowbite-react/plugin/vite';
 
 export default defineConfig({
-  plugins: [tailwindcss(), react()],
+  plugins: [tailwindcss(), react(), flowbiteReact()],
   resolve: {
     alias: {
       // flowbite-react bundles tailwind-merge v2 for Tailwind 3 alongside v3, and only
