@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @config "../../tailwind.config.cjs";
-@source "../../node_modules/flowbite-react/**/*.js";
+/* Only the flowbite-react components we use, so their classes alone are generated.
+   Importing a new component means adding it here (src/styles/flowbite-source.test.js checks). */
+@source "../../node_modules/flowbite-react/dist/components/{Badge,Button,Navbar,Spinner,Table,Tabs,TextInput}/**/*.js";
 
 :root {
   --ledger-base: #08090d;

@@ -2,7 +2,7 @@ module.exports = {
   darkMode: 'class',
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
-    "./node_modules/flowbite-react/**/*.js",
+    // flowbite-react components are scanned via @source in src/styles/index.css
   ],
   theme: {
     extend: {
